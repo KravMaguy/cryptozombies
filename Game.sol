@@ -16,7 +16,6 @@ contract ZombieFactory {
     mapping(uint256 => address) public zombieToOwner;
     mapping(address => uint256) ownerZombieCount;
 
-    // edit function definition below
     function _createZombie(string memory _name, uint256 _dna) internal {
         uint256 id = zombies.push(Zombie(_name, _dna)) - 1;
         zombieToOwner[id] = msg.sender;
@@ -36,6 +35,7 @@ contract ZombieFactory {
     function createRandomZombie(string memory _name) public {
         require(ownerZombieCount[msg.sender] == 0);
         uint256 randDna = _generateRandomDna(_name);
+        randDna = randDna - (randDna % 100);
         _createZombie(_name, randDna);
     }
 }
