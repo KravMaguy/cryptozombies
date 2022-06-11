@@ -21,10 +21,17 @@ contract KittyInterface {
 }
 
 contract ZombieFeeding is ZombieFactory {
-    address ckAddress = 0x06012c8cf97BEaD5deAe237070F9587f8E7A266d;
-    KittyInterface kittyContract = KittyInterface(ckAddress);
+    // 1. Remove this:
+    // address ckAddress = 0x06012c8cf97BEaD5deAe237070F9587f8E7A266d;
+    // 2. Change this to just a declaration:
+    // KittyInterface kittyContract = KittyInterface(ckAddress);
+    KittyInterface kittyContract;
 
-    // Modify function definition here:
+    // 3. Add setKittyContractAddress method here
+    function setKittyContractAddress(address _address) external {
+        kittyContract = KittyInterface(_address);
+    }
+
     function feedAndMultiply(
         uint256 _zombieId,
         uint256 _targetDna,
@@ -34,7 +41,6 @@ contract ZombieFeeding is ZombieFactory {
         Zombie storage myZombie = zombies[_zombieId];
         _targetDna = _targetDna % dnaModulus;
         uint256 newDna = (myZombie.dna + _targetDna) / 2;
-        // Add an if statement here
         if (
             keccak256(abi.encodePacked(_species)) ==
             keccak256(abi.encodePacked("kitty"))
@@ -47,8 +53,6 @@ contract ZombieFeeding is ZombieFactory {
     function feedOnKitty(uint256 _zombieId, uint256 _kittyId) public {
         uint256 kittyDna;
         (, , , , , , , , , kittyDna) = kittyContract.getKitty(_kittyId);
-        // And modify function call here:
-
         feedAndMultiply(_zombieId, kittyDna, "kitty");
     }
 }
