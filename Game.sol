@@ -1,6 +1,10 @@
 pragma solidity >=0.5.0 <0.6.0;
 
-contract ZombieFactory {
+// 1. Import here
+import "./ownable.sol";
+
+// 2. Inherit here:
+contract ZombieFactory is Ownable {
     event NewZombie(uint256 zombieId, string name, uint256 dna);
 
     uint256 dnaDigits = 16;
