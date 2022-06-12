@@ -1,6 +1,6 @@
 pragma solidity >=0.5.0 <0.6.0;
 
-import "./zombiefactory.sol";
+import "./Game.sol";
 
 contract KittyInterface {
     function getKitty(uint256 _id)
@@ -23,11 +23,19 @@ contract KittyInterface {
 contract ZombieFeeding is ZombieFactory {
     KittyInterface kittyContract;
 
-    // Modify this function:
     function setKittyContractAddress(address _address) external onlyOwner {
         kittyContract = KittyInterface(_address);
     }
 
+    function _triggerCooldown(Zombie storage _zombie) internal {
+        _zombie.readyTime = uint32(now + cooldownTime);
+    }
+
+    function _isReady(Zombie storage _zombie) internal view returns (bool) {
+        return (_zombie.readyTime <= now);
+    }
+
+    // 1. Make this function internal
     function feedAndMultiply(
         uint256 _zombieId,
         uint256 _targetDna,
@@ -35,6 +43,7 @@ contract ZombieFeeding is ZombieFactory {
     ) public {
         require(msg.sender == zombieToOwner[_zombieId]);
         Zombie storage myZombie = zombies[_zombieId];
+        // 2. Add a check for `_isReady` here
         _targetDna = _targetDna % dnaModulus;
         uint256 newDna = (myZombie.dna + _targetDna) / 2;
         if (
@@ -44,6 +53,7 @@ contract ZombieFeeding is ZombieFactory {
             newDna = newDna - (newDna % 100) + 99;
         }
         _createZombie("NoName", newDna);
+        // 3. Call `_triggerCooldown`
     }
 
     function feedOnKitty(uint256 _zombieId, uint256 _kittyId) public {
