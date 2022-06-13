@@ -8,7 +8,6 @@ contract ZombieHelper is ZombieFeeding {
         _;
     }
 
-    // Start here
     function changeName(uint256 _zombieId, string calldata _newName)
         external
         aboveLevel(2, _zombieId)
@@ -23,5 +22,15 @@ contract ZombieHelper is ZombieFeeding {
     {
         require(msg.sender == zombieToOwner[_zombieId]);
         zombies[_zombieId].dna = _newDna;
+    }
+
+    function getZombiesByOwner(address _owner)
+        external
+        view
+        returns (uint256[] memory)
+    {
+        // Start here
+        uint256[] memory result = new uint256[](ownerZombieCount[_owner]);
+        return result;
     }
 }
